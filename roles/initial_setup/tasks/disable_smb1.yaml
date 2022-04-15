@@ -1,0 +1,6 @@
+- win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters
+    name: "SMB1"
+    data: "0"
+    type: dword
+  name: "ensuring SMB1 service is disabled"

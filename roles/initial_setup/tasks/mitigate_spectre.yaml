@@ -1,0 +1,33 @@
+- win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management
+    name: "{{ item.name }}"
+    data: "{{ item.data }}"
+    type: dword
+  loop:
+    - { name: "FeatureSettingsOverride", data: "72" }
+    - { name: "FeatureSettingsOverrideMask", data: "3" }
+  name: "mitigations for AMD - CVE 2018-3639 and CVE-2017-5715"
+  when: ansible_facts["env"]["PROCESSOR_IDENTIFIER"] | regex_search("AuthenticAMD")
+
+- win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management
+    name: "{{ item.name }}"
+    data: "{{ item.data }}"
+    type: dword
+  name: "mitigations for Intel (HT enabled) - CVE-2019-11135, CVE-2018-11091, CVE-2018-12126, CVE-2018-12127, CVE-2018-12130, CVE-2017-5715, CVE-2017-5753, CVE-2018-3639, CVE-2017-5754, CVE-2018-3615, CVE-2018-3620 and CVE-2018-3646"
+  loop:
+    - { name: "FeatureSettingsOverride", data: "72" }
+    - { name: "FeatureSettingsOverrideMask", data: "3" }
+  when: ansible_facts["env"]["PROCESSOR_IDENTIFIER"] | regex_search("AuthenticAMD") | ternary(false, true)
+
+- win_shell: Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-Hypervisor | Select-Object -ExpandProperty State
+  register: hyperv_state
+  name: "querying HyperV status"
+
+- win_regedit:
+    path: HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization
+    name: MinVmVersionForCpuBasedMitigations 
+    data: "1.0"
+    type: string
+  name: "mitigations for HyperV"
+  when: hyperv_state == "Enabled"

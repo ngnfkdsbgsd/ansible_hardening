@@ -1,0 +1,36 @@
+- win_copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: "{{ lgpo_local_path }}", dest: '%Temp%\lgpo.zip' }
+    - { src: "{{ gpo_template }}", dest: '%Temp%\gpo_template.zip' }
+  name: "copying '{{ lgpo_local_path }}' and '{{ gpo_template }}'"
+
+- win_unzip:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    delete_archive: yes
+  loop:
+    - { src: '%Temp%\lgpo.zip', dest: '%Temp%\lgpo' }
+    - { src: '%Temp%\gpo_template.zip', dest: '%Temp%\gpo_template' }
+  name: "unpacking '{{ lgpo_local_path }}' and '{{ gpo_template }}'"
+
+- win_lgpo:
+    exec_path: '%Temp%\lgpo\lgpo.exe'
+    command: "import_from_backup"
+    argv: '%Temp%\gpo_template'
+  name: "applying policy backup '{{ gpo_template }}'"
+
+- win_robocopy:
+    flags: "/e"
+    src: '%Temp%\gpo_template\DomainSysvol\GPO\Adm'
+    dest: '%windir%\system32\GroupPolicy\Adm'
+  name: "applying .adm template from backup"
+
+- win_file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - '%Temp%\gpo_template'
+    - '%Temp%\lgpo'
+  name: "cleanup"

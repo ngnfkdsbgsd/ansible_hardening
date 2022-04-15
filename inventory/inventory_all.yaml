@@ -1,0 +1,7 @@
+all:
+  hosts:
+    ws2012r2:
+    ws2008r2:
+  vars:
+    ansible_connection: ssh
+    ansible_shell_type: powershell

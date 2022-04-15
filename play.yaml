@@ -1,0 +1,7 @@
+- hosts: all
+  gather_subset:
+    - '!all'
+    - 'min'
+  tasks:
+  - import_role: 
+      name: initial_setup

@@ -1,0 +1,5 @@
+- win_service:
+    name: "Spooler"
+    state: "stopped"
+    start_mode: "disabled"
+  name: "ensuring 'Print Spooler' is disabled"

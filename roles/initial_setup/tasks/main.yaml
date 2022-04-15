@@ -1,0 +1,14 @@
+- name: "ensure local GPO settings are equal to the template"
+  import_tasks: apply_gpo.yaml
+ 
+- name: "ensure 'SMB1' is disabled"
+  import_tasks: disable_smb1.yaml
+
+- name: "ensure 'Print Spooler' service is disabled"
+  import_tasks: disable_spooler.yaml
+  
+- name: "ensure Spectre/Meltdown mitigations are enabled"
+  import_tasks: mitigate_spectre.yaml
+
+- name: "Restart host"
+  win_reboot:

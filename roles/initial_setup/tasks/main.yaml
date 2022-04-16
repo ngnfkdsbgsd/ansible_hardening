@@ -1,14 +1,31 @@
+- name: "query processor vendor (intel/amd)"
+  win_shell: '[System.Environment]::GetEnvironmentVariable("PROCESSOR_IDENTIFIER")'
+  register: proc_vendor
+  no_log: true
+
+- name: "query HyperV status"
+  win_shell: Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-Hypervisor | Select-Object -ExpandProperty State
+  register: hyperv_state
+  no_log: true
+
+- name: "query OS version"
+  win_shell: Get-CimInstance -ClassName CIM_OperatingSystem | Select-Object -ExpandProperty Version
+  register: os_ver_major
+  no_log: true
+
+- set_fact: gpo_template="{{ gpo_bag[os_ver_major.stdout | regex_search('^(\\d+\\.){2}\\d+')] }}"
+
 - name: "ensure local GPO settings are equal to the template"
-  import_tasks: apply_gpo.yaml
+  include_tasks: apply_gpo.yaml
  
 - name: "ensure 'SMB1' is disabled"
-  import_tasks: disable_smb1.yaml
+  include_tasks: disable_smb1.yaml
 
 - name: "ensure 'Print Spooler' service is disabled"
-  import_tasks: disable_spooler.yaml
-  
-- name: "ensure Spectre/Meltdown mitigations are enabled"
-  import_tasks: mitigate_spectre.yaml
+  include_tasks: disable_spooler.yaml
+
+- name: "mitigate CVE 2018-12207 and Spectre/Meltdown"
+  include_tasks: mitigate_cve.yaml
 
 - name: "Restart host"
   win_reboot:

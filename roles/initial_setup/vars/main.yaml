@@ -6,5 +6,4 @@ gpo_bag:
   "6.3.9600": "ws2012r2.zip"
   "10.0.14393": "ws2016.zip"
   "10.0.17763": "ws2019.zip"
-gpo_template: "{{ gpo_bag[ansible_facts['distribution_version'] | regex_search('^(\\d+\\.){2}\\d+')] }}"
 lgpo_local_path: 'lgpo.zip'

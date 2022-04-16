@@ -1,7 +1,5 @@
 - hosts: all
-  gather_subset:
-    - '!all'
-    - 'min'
+  gather_facts: false
   tasks:
-  - import_role: 
+  - include_role: 
       name: initial_setup

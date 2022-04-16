@@ -30,4 +30,4 @@
   win_optional_feature:
     name: SMB1Protocol
     state: absent
-  when: ( os_ver_major.stdout | regex_replace('[\\rnt]', ''))  not in ['5.2.3790', '6.0.6001', '6.1.7601']
+  when: ( os_ver_major.stdout | regex_replace('[\\r\\n\\t]', '')) not in ['5.2.3790', '6.0.6001', '6.1.7601']

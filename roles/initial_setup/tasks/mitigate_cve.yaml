@@ -20,7 +20,7 @@
   loop:
     - { path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management', name: "FeatureSettingsOverride", data: "72" }
     - { path: 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management', name: "FeatureSettingsOverrideMask", data: "3" }
-    - { path: 'HKLM:\\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization', name: "IfuErrataMitigations", data: "1"}
+    - { path: 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization', name: "IfuErrataMitigations", data: "1"}
   when: proc_vendor.stdout | regex_search("AuthenticAMD") | ternary(false, true)
 
 - name: "mitigations for HyperV"

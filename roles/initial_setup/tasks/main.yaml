@@ -1,17 +1,14 @@
 - name: "query processor vendor (intel/amd)"
   win_shell: '[System.Environment]::GetEnvironmentVariable("PROCESSOR_IDENTIFIER")'
   register: proc_vendor
-  no_log: true
 
 - name: "query HyperV status"
   win_shell: Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-Hypervisor | Select-Object -ExpandProperty State
   register: hyperv_state
-  no_log: true
 
 - name: "query OS version"
   win_shell: Get-CimInstance -ClassName CIM_OperatingSystem | Select-Object -ExpandProperty Version
   register: os_ver_major
-  no_log: true
 
 - set_fact: gpo_template="{{ gpo_bag[os_ver_major.stdout | regex_search('^(\\d+\\.){2}\\d+')] }}"
 

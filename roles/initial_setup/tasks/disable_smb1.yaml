@@ -17,7 +17,6 @@
       path: HKLM:\SYSTEM\CurrentControlSet\Services\LanmanWorkstation
       name: "DependOnService"
   register: service_bag
-  no_log: true
 
 - name: "remove SMB1 dependency from SMB client"
   win_regedit:
